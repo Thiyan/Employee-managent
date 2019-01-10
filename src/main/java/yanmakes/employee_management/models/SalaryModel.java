@@ -79,6 +79,6 @@ public class SalaryModel implements Serializable {
     }
 
     public boolean isValid(){
-        return this.mName!=null && this.halfAmount != null && this.fullAmount != null;
+        return !this.mName.equals("") && !this.halfAmount.equals("") && !this.fullAmount.equals("");
     }
 }

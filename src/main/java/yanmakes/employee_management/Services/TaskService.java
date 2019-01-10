@@ -44,7 +44,7 @@ public class TaskService {
                 employees.add(employeeRepository.getOne(e.geteId()));
             }
 
-            task.setCreatedBy(employeeRepository.getOne(task.getCreatedBy().geteId()));
+//            task.setCreatedBy(employeeRepository.getOne(task.getCreatedBy().geteId()));
 
 
         }catch (Exception ex){

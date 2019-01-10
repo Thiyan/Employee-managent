@@ -7,6 +7,8 @@ import yanmakes.employee_management.Exceptions.EMException;
 import yanmakes.employee_management.Exceptions.EMStatus;
 import yanmakes.employee_management.models.LeaveModel;
 
+import java.util.List;
+
 @Service
 public class LeaveModelService {
 
@@ -32,4 +34,62 @@ public class LeaveModelService {
         return leaveModel;
     }
 
+    public List<LeaveModel> getLeaveModels() throws EMException {
+
+        List<LeaveModel> leaveModels;
+        try {
+            leaveModels=leaveModelRepository.findAll();
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+        if(leaveModels.isEmpty() || leaveModels==null)
+            throw new EMException(EMStatus.NO_ENTRY_FOUND);
+
+        return leaveModels;
+    }
+
+    public LeaveModel delete(String id) throws EMException {
+
+        LeaveModel leaveModel;
+
+        try {
+            leaveModel=leaveModelRepository.getOne((int) (Integer.valueOf(id)));
+        }catch (Exception ex){
+            System.out.println(ex);
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+
+        if (leaveModel==null)
+            throw new EMException(EMStatus.NO_ENTRY_FOUND);
+
+        try {
+            leaveModelRepository.delete(leaveModel);
+        }catch (Exception ex){
+            System.out.println(ex);
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+        return leaveModel;
+    }
+
+    public LeaveModel update(LeaveModel leaveModel) throws EMException {
+
+        try {
+            leaveModelRepository.getOne(leaveModel.getlId());
+        }catch (Exception ex){
+            throw new EMException(EMStatus.ID_IS_REQUIRED);
+        }
+
+
+        try {
+            leaveModel=leaveModelRepository.save(leaveModel);
+        }
+        catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+        return leaveModel;
+    }
 }

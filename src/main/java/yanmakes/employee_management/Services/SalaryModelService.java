@@ -5,7 +5,10 @@ import org.springframework.stereotype.Service;
 import yanmakes.employee_management.DAO.SalaryModelRepository;
 import yanmakes.employee_management.Exceptions.EMException;
 import yanmakes.employee_management.Exceptions.EMStatus;
+import yanmakes.employee_management.models.Employee;
 import yanmakes.employee_management.models.SalaryModel;
+
+import java.util.List;
 
 @Service
 public class SalaryModelService {
@@ -33,4 +36,62 @@ public class SalaryModelService {
         return salaryModel;
     }
 
+    public List<SalaryModel> getSalaryModels() throws EMException {
+
+        List<SalaryModel> salaryModels;
+        try {
+            salaryModels=salaryModelRepository.findAll();
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+        if (salaryModels.isEmpty() || salaryModels==null)
+            throw new EMException(EMStatus.NO_ENTRY_FOUND);
+
+        return salaryModels;
+    }
+
+    public SalaryModel delete(String id) throws EMException {
+
+        SalaryModel salaryModel;
+
+        try {
+            salaryModel=salaryModelRepository.getOne((int) (Integer.valueOf(id)));
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+
+        if (salaryModel==null)
+            throw new EMException(EMStatus.NO_ENTRY_FOUND);
+
+        try {
+            salaryModelRepository.delete(salaryModel);
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+        System.out.println(salaryModel.toString());
+        return salaryModel;
+
+    }
+
+    public SalaryModel update(SalaryModel salaryModel) throws EMException {
+
+        try {
+            salaryModelRepository.getOne(salaryModel.getsId());
+        }catch (Exception ex){
+            throw new EMException(EMStatus.ID_IS_REQUIRED);
+        }
+
+
+        try {
+            salaryModel=salaryModelRepository.save(salaryModel);
+        }
+        catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+        return salaryModel;
+    }
 }

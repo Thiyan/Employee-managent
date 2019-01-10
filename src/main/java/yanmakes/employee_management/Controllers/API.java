@@ -54,16 +54,16 @@ public class API {
         return new EMResponse(attendanceService.addAttendance(attendance,time));
     }
 
-//    @PostMapping("/add-task")
-//    public EMResponse addTask(@RequestBody Task task) throws EMException {
-//
-////        System.out.println(program.toString());
-//
-//        if (!task.isValid())
-//            throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
-//
-//        return new EMResponse(taskService.addTask(task));
-//    }
+    @PostMapping("/add-task")
+    public EMResponse addTask(@RequestBody Task task) throws EMException {
+
+//        System.out.println(program.toString());
+
+        if (!task.isValid())
+            throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
+
+        return new EMResponse(taskService.addTask(task));
+    }
 
     @PostMapping("/add-request")
     public EMResponse addRequest(@RequestBody LeaveRequest request) throws EMException {

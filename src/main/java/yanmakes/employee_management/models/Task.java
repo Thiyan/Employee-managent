@@ -29,7 +29,7 @@ public class Task implements Serializable {
     private LocalDateTime createdDate;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "created_by",nullable = false)
+    @JoinColumn(name = "created_by")
     private Employee createdBy;
 
     @Column(name = "active")
@@ -108,6 +108,6 @@ public class Task implements Serializable {
     }
 
     public boolean isValid(){
-        return !this.employess.isEmpty() && this.description !=null && this.deadLine !=null && this.createdBy !=null;
+        return !this.employess.isEmpty() && !this.description.equals("") && !this.deadLine.equals("") /*&& !this.createdBy.equals("")*/;
     }
 }

@@ -148,6 +148,6 @@ public class LeaveRequest implements Serializable {
     }
 
     public boolean isValid(){
-        return this.requestedBy != null && !this.dates.isEmpty() && this.reason!=null && this.checked == false;
+        return !this.requestedBy.equals("") && !this.dates.isEmpty() && !this.equals("") && this.checked == false;
     }
 }

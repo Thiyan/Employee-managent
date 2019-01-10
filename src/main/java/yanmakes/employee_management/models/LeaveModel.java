@@ -78,6 +78,7 @@ public class LeaveModel implements Serializable {
     }
 
     public boolean isValid(){
-        return this.mName!=null && String.valueOf(this.daysPerMonth ) != null && String.valueOf(this.daysPerYear ) != null;
+
+        return !this.mName.equals("") && !String.valueOf(this.daysPerMonth ).equals("") && !String.valueOf(this.daysPerYear ).equals("");
     }
 }

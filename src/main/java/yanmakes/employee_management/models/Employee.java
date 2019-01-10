@@ -57,7 +57,7 @@ public class Employee implements Serializable {
     @Column(name = "password",nullable = false,length = 100)
     private String password;
 
-    @Column(name = "image",nullable = false,length = 500)
+    @Column(name = "image",length = 500)
     private String image;
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
@@ -66,11 +66,11 @@ public class Employee implements Serializable {
     private Set<Role> roles;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "salary",nullable = false)
+    @JoinColumn(name = "salary")
     private SalaryModel salaryModel;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "leaves",nullable = false)
+    @JoinColumn(name = "leaves")
     private LeaveModel leaveModel;
 
     @Column(name = "active")

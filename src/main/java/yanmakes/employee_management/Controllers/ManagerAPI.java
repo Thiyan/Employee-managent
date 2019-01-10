@@ -5,10 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import yanmakes.employee_management.Exceptions.EMException;
 import yanmakes.employee_management.Exceptions.EMStatus;
 import yanmakes.employee_management.Services.*;
-import yanmakes.employee_management.Utils.AttendaceTimeType;
 import yanmakes.employee_management.Utils.EMResponse;
-import yanmakes.employee_management.models.Attendance;
-import yanmakes.employee_management.models.Employee;
 import yanmakes.employee_management.models.LeaveRequest;
 import yanmakes.employee_management.models.Task;
 
@@ -43,6 +40,8 @@ public class ManagerAPI {
     public EMResponse addTask(@RequestBody Task task) throws EMException {
 
 //        System.out.println(program.toString());
+        if(task.isValid())
+            throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
 
         return new EMResponse(taskService.addTask(task));
     }

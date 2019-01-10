@@ -1,5 +1,6 @@
 package yanmakes.employee_management.Services;
 
+import org.hibernate.dialect.SybaseAnywhereDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,12 +53,12 @@ public class EmployeeService {
 
         Set<Role> roles=new HashSet<Role>();
 
-        for(Role r:employee.getRoles()){
+        /*for(Role r:employee.getRoles()){
             roles.add(roleRepository.getOne(r.getrId()));
-        }
-//        roles.add(roleRepository.getOne(1));
-//        roles.add(roleRepository.getOne(2));
-//        roles.add(roleRepository.getOne(3));
+        }*/
+        roles.add(roleRepository.getOne(1));
+        //roles.add(roleRepository.getOne(2));
+       	//roles.add(roleRepository.getOne(3));
 
         employee.setRoles(roles);
 
@@ -106,6 +107,10 @@ public class EmployeeService {
      * @throws EMException
      */
     public Employee updateEmployee(Employee employee) throws EMException {
+
+        if(String.valueOf(employee.geteId()).equals("") || !employeeRepository.findByUserId(employee.getUserId()))
+            throw new EMException(EMStatus.ID_IS_REQUIRED);
+
         try {
             employee=employeeRepository.save(employee);
         }
@@ -113,6 +118,33 @@ public class EmployeeService {
             throw new EMException(EMStatus.DB_ERROR);
         }
 
+        return employee;
+
+    }
+
+    public Employee deleteEmployee(String id) throws EMException {
+
+
+        Employee employee;
+        try {
+            employee=employeeRepository.getOne((int) (Integer.valueOf(id)));
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+        System.out.println(employee.toString());
+
+        if (employee==null)
+            throw new EMException(EMStatus.NO_ENTRY_FOUND);
+
+        System.out.println(employee.toString());
+
+        try {
+            employeeRepository.delete(employee);
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+        System.out.println(employee.toString());
         return employee;
 
     }
