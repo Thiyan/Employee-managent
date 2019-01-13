@@ -20,11 +20,11 @@ public class Salry implements Serializable {
     private Employee employee;
 
     @Column(name = "salary_amount")
-    public String salaryAmount;
+    private double salaryAmount;
 
     public Salry(){}
 
-    public Salry(String month, Employee employee, String salaryAmount) {
+    public Salry(String month, Employee employee, double salaryAmount) {
         this.month=month;
         this.employee=employee;
         this.salaryAmount=salaryAmount;
@@ -55,11 +55,11 @@ public class Salry implements Serializable {
         this.employee = employee;
     }
 
-    public String getSalaryAmount() {
+    public double getSalaryAmount() {
         return salaryAmount;
     }
 
-    public void setSalaryAmount(String salaryAmount) {
+    public void setSalaryAmount(double salaryAmount) {
         this.salaryAmount = salaryAmount;
     }
 

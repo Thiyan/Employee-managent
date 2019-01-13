@@ -36,6 +36,11 @@ public class SalaryModelService {
         return salaryModel;
     }
 
+    /**
+     * THIS METHOD IS FOR GET ALL SALARY MODEL BY ADMIN
+     * @return
+     * @throws EMException
+     */
     public List<SalaryModel> getSalaryModels() throws EMException {
 
         List<SalaryModel> salaryModels;
@@ -51,6 +56,13 @@ public class SalaryModelService {
         return salaryModels;
     }
 
+
+    /**
+     * THIS METHOD IS FOR DELETING A SALARY MODEL BY ADMIN
+     * @param id
+     * @return
+     * @throws EMException
+     */
     public SalaryModel delete(String id) throws EMException {
 
         SalaryModel salaryModel;
@@ -76,6 +88,12 @@ public class SalaryModelService {
 
     }
 
+    /**
+     * THIS METHOD IS FOR ADDING A NEW SALARY MODEL BY ADMIN
+     * @param salaryModel
+     * @return
+     * @throws EMException
+     */
     public SalaryModel update(SalaryModel salaryModel) throws EMException {
 
         try {
@@ -94,4 +112,5 @@ public class SalaryModelService {
 
         return salaryModel;
     }
+
 }

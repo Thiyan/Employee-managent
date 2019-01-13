@@ -27,6 +27,11 @@ public class PositionService {
     }
 
 
+    /**
+     * THIS METHOD IS FOR GET ALL A POSITIONS BY ADMIN
+     * @return
+     * @throws EMException
+     */
     public List<Position> getPostions() throws EMException {
 
         List<Position> positions;
@@ -43,6 +48,12 @@ public class PositionService {
 
     }
 
+    /**
+     * THIS METHOD IS FOR DELETING A POSITION BY ADMIN
+     * @param id
+     * @return
+     * @throws EMException
+     */
     public Position delete(String id) throws EMException {
 
         Position position;
@@ -68,6 +79,12 @@ public class PositionService {
 
     }
 
+    /**
+     * THIS METHOD IS FOR UPDATING A POSITION BY ADMIN
+     * @param position
+     * @return
+     * @throws EMException
+     */
     public Position update(Position position) throws EMException {
 
         try {

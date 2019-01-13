@@ -101,7 +101,7 @@ public class Attendance implements Serializable {
                 ", dateTime=" + date +
                 ", attendance=" + attendance +
                 ", arrival=" + arrival +
-                ", de=" + attendance +
+                ", attendance=" + attendance +
                 '}';
     }
 

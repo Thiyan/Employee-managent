@@ -35,6 +35,9 @@ public class API {
     @Autowired
     private LeaveRequestService leaveRequestService;
 
+    @Autowired
+    private SalaryService salaryService;
+
 
     @PutMapping("/update-employee")
     public EMResponse updateEmployee(@RequestBody Employee employee) throws EMException {
@@ -43,10 +46,10 @@ public class API {
     }
 
 
-    @PostMapping("/attendance/{time}")
-    public EMResponse addAttendance(@RequestBody Attendance attendance,@PathVariable AttendaceTimeType time) throws EMException {
+    @PostMapping("/attendance")
+    public EMResponse addAttendance(@RequestBody Attendance attendance,@RequestParam("time") AttendaceTimeType time) throws EMException {
 
-//        System.out.println(program.toString());
+        System.out.println("In api");
 
         if (!attendance.isValid())
             throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
@@ -54,17 +57,26 @@ public class API {
         return new EMResponse(attendanceService.addAttendance(attendance,time));
     }
 
-    @PostMapping("/add-task")
-    public EMResponse addTask(@RequestBody Task task) throws EMException {
 
-//        System.out.println(program.toString());
+    @GetMapping("my-salary")
+    public EMResponse getSalary(@RequestParam("id") int id) throws EMException {
 
-        if (!task.isValid())
-            throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
-
-        return new EMResponse(taskService.addTask(task));
+        return new EMResponse(salaryService.getSalary(id));
     }
 
+    @GetMapping("my-attendance")
+    public EMResponse getAttendance(@RequestParam("id") int id) throws EMException {
+
+        return new EMResponse(attendanceService.getAttendance(id));
+    }
+
+
+//    @GetMapping("my-task")
+//    public EMResponse getTasks(@RequestParam("id") int id) throws EMException {
+//
+//        return new EMResponse(taskService.getTask(id));
+//    }
+    
     @PostMapping("/add-request")
     public EMResponse addRequest(@RequestBody LeaveRequest request) throws EMException {
 

@@ -27,7 +27,11 @@ public class NoticeService {
         return notice;
     }
 
-
+    /**
+     * THIS METHOD IS FOR ADDING A NEW NOTICE BY ADMIN
+     * @return
+     * @throws EMException
+     */
     public List<Notice> getNotices() throws EMException {
 
         List<Notice> notices;
@@ -44,6 +48,12 @@ public class NoticeService {
 
     }
 
+    /**
+     * THIS METHOD IS FOR DELETING NEW NOTICE BY ADMIN
+     * @param id
+     * @return
+     * @throws EMException
+     */
     public Notice delete(String id) throws EMException {
 
         Notice notice;
@@ -69,6 +79,12 @@ public class NoticeService {
 
     }
 
+    /**
+     * THIS METHOD IS FOR UPDATING A NOTICE BY ADMIN
+     * @param notice
+     * @return
+     * @throws EMException
+     */
     public Notice update(Notice notice) throws EMException {
 
         try {

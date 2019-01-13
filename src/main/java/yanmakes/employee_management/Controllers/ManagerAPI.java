@@ -35,22 +35,44 @@ public class ManagerAPI {
     @Autowired
     private LeaveRequestService leaveRequestService;
 
+    @Autowired
+    private LeaveService leaveService;
+
+    @Autowired
+    private SalaryService salaryService;
+
 
     @PostMapping("/add-task")
     public EMResponse addTask(@RequestBody Task task) throws EMException {
 
 //        System.out.println(program.toString());
-        if(task.isValid())
+        if(!task.isValid())
             throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
+
+        System.out.println("hhgJ");
 
         return new EMResponse(taskService.addTask(task));
     }
+
+
 
     @PutMapping("/add-reply")
     public EMResponse addReply(@RequestBody LeaveRequest leaveRequest) throws EMException {
 //        System.out.println(program.toString());
         return new EMResponse(leaveRequestService.addLeaveReply(leaveRequest));
     }
+
+//    @GetMapping("/leaves")
+//    public EMResponse createLeaves() throws EMException {
+////        System.out.println(program.toString());
+//        return new EMResponse(leaveService.createLeaves());
+//    }
+
+//    @GetMapping("/salary")
+//    public EMResponse createsalary() throws EMException {
+////        System.out.println(program.toString());
+//        return new EMResponse(salaryService.createSalary());
+//    }
 
 
 

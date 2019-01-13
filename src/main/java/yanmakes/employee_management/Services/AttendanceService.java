@@ -30,6 +30,9 @@ public class AttendanceService {
     @Autowired
     private SalaryRepository salaryRepository;
 
+    @Autowired
+    private SalaryService salaryService;
+
     /**
      * THIS METHOD IS FOR ADDING A DAILY ATTENDANCE
      * @param attendance
@@ -42,104 +45,190 @@ public class AttendanceService {
         if(attendance.isAttendance()){
 
             if(type== AttendaceTimeType.AR){
+                System.out.println("Hi222");
                 attendance.setDate(java.time.LocalDate.now());
                 attendance.setArrival(java.time.LocalTime.now());
             }
             else if (type== AttendaceTimeType.DP){
-                if(String.valueOf(attendance.getaId()) != null && attendance.getDate() != null
-                    && attendance.getArrival() != null)
+                if(!String.valueOf(attendance.getaId()).equals("") && !attendance.getDate().equals("")
+                    && !attendance.getArrival().equals(""))
                         attendance.setDeparture(java.time.LocalTime.now());
+
                 else
                     throw new EMException(EMStatus.NO_ARRIVAL);
             }
 
         }
         else {
-            if(String.valueOf(attendance.getaId()) == null && attendance.getDate() == null)
+            if(String.valueOf(attendance.getaId()).equals("") && attendance.getDate().equals(""))
                 attendance.setDate(java.time.LocalDate.now());
+
+            else
+                throw new EMException(EMStatus.NO_ARRIVAL);
         }
 
+        System.out.println(attendance.toString());
+
+
         try {
-           attendance = attendanceRepository.save(attendance);
+            attendance.setEmployee(employeeRepository.getOne(attendance.getEmployee().geteId()));
+
+            System.out.println(attendance.toString());
+            attendance = attendanceRepository.save(attendance);
+
+
         }
         catch (Exception ex){
             throw new EMException(EMStatus.DB_ERROR);
         }
 
+        if(attendance.getDeparture()!=null){
+            System.out.println("sSFSF");
+            attendance= this.calculateAttendance(attendance);
+            this.calculateSalary(attendance);
+        }
+        System.out.println(attendance);
+
         return attendance;
+
     }
 
+    public Attendance calculateAttendance(Attendance attendance){
+        System.out.println("sahdgd");
+        if( HOURS.between(attendance.getArrival(),attendance.getDeparture()) >=5)
+            attendance.setAttType(AttendaceType.FL);
 
-    /**
-     * THIS METHOD IS FOR DETERMINE WHETHER THE DAY IS HALF OR FULL FOR  EMPLOYEES ACCORDING
-     * THEIR WORKING HOURS
-     * WORKING HOUR IS CALCULATE BY DEPARTURE TIME - ARRIVAL TIME
-     * INTERNAL PURPOSE
-     * AUTOMATED METHOD
-     */
-    public void calculateAttendance(){
+        else
+            attendance.setAttType(AttendaceType.HF);
+
+        System.out.println(attendance.toString());
+
+        return attendance;
+
+    }
+
+    public Attendance calculateSalary(Attendance attendance){
+
+        String month =attendance.getDate().getMonth().toString() + "-" + String.valueOf(attendance.getDate().getYear());
+
+        Salry salary=new Salry();
+
+        try {
+            salary=salaryRepository.findByEmployeeAndMonth(attendance.getEmployee(),month);
+        }catch (Exception ex){
+
+        }
+
+        if (salary==null)
+            salary=salaryService.createSalary(attendance.getEmployee(),month);
+
+        double s=salary.getSalaryAmount();
+
+        if( attendance.getAttType()==AttendaceType.FL)
+            s=s+Double.parseDouble(attendance.getEmployee().getSalaryModel().getFullAmount());
+
+        else if(attendance.getAttType()==AttendaceType.HF)
+            s=s+Double.parseDouble(attendance.getEmployee().getSalaryModel().getHalfAmount());
+
+        salary.setSalaryAmount(s);
+
+        salaryRepository.save(salary);
+
+        return attendance;
+
+    }
+
+    public List<Attendance> getAttendance(int id) throws EMException {
+
         List<Attendance> attendances=new ArrayList<>();
+
+        System.out.println(id);
         try {
-            attendances=attendanceRepository.findByDateAndAttendance(LocalDate.now(),true);
-        }
-        catch (Exception ex){
-            System.out.println(EMStatus.DB_ERROR);
-        }
-
-        for(Attendance attendance:attendances){
-            if( HOURS.between(attendance.getArrival(),attendance.getDeparture()) >=5)
-                attendance.setAttType(AttendaceType.FL);
-
-            else
-                attendance.setAttType(AttendaceType.HF);
-
+            Employee employee=employeeRepository.getOne(id);
+            System.out.println(employee.toString());
+            attendances=attendanceRepository.findByEmployee(employee);
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
         }
 
+        if(attendances.isEmpty())
+            throw new EMException(EMStatus.NO_ENTRY_FOUND);
+
+        return attendances;
     }
 
+//    /**
+//     * THIS METHOD IS FOR DETERMINE WHETHER THE DAY IS HALF OR FULL FOR  EMPLOYEES ACCORDING
+//     * THEIR WORKING HOURS
+//     * WORKING HOUR IS CALCULATE BY DEPARTURE TIME - ARRIVAL TIME
+//     * INTERNAL PURPOSE
+//     * AUTOMATED METHOD
+//     */
+//    public void calculateAttendances(){
+//        List<Attendance> attendances=new ArrayList<>();
+//        try {
+//            attendances=attendanceRepository.findByDateAndAttendance(LocalDate.now(),true);
+//        }
+//        catch (Exception ex){
+//            System.out.println(EMStatus.DB_ERROR);
+//        }
+//
+//        for(Attendance attendance:attendances){
+//            if( HOURS.between(attendance.getArrival(),attendance.getDeparture()) >=5)
+//                attendance.setAttType(AttendaceType.FL);
+//
+//            else
+//                attendance.setAttType(AttendaceType.HF);
+//
+//        }
+//    }
 
-    /**
-     * THIS METHOD IS FOR CALCULTE THE MONTHLY SALARY FOR EMPLOYEES
-     * INTERNAL PURPOSE
-     * AUTOMATED METHOD
-     */
-    public void calculateSalary(){
 
-        List<Employee> employees=new ArrayList<>();
-        try {
-            employees=employeeRepository.findByActive(true);
-        }
-        catch (Exception ex){
-            System.out.println(EMStatus.DB_ERROR);
-        }
 
-        String month =LocalDate.now().getMonth().toString() + "-" + String.valueOf(LocalDate.now().getYear());
-
-        for (Employee employee:employees){
-
-            int fullDays = 0,halfDays=0;
-            try {
-                fullDays=attendanceRepository.countByEmployeeAndAttType(employee,AttendaceType.FL);
-
-                halfDays=attendanceRepository.countByEmployeeAndAttType(employee,AttendaceType.HF);
-            }
-            catch (Exception ex){
-                System.out.println(EMStatus.DB_ERROR);
-            }
-
-            double salary= Double.parseDouble(employee.getSalaryModel().getFullAmount()) * fullDays +
-
-                            Double.parseDouble(employee.getSalaryModel().getHalfAmount()) * halfDays;
-
-            Salry salry=new Salry(month,employee,String.valueOf(salary));
-
-            try {
-                salaryRepository.save(salry);
-            }catch (Exception ex){
-                System.out.println(EMStatus.DB_ERROR);
-            }
-
-        }
-
-    }
+//
+//    /**
+//     * THIS METHOD IS FOR CALCULTE THE MONTHLY SALARY FOR EMPLOYEES
+//     * INTERNAL PURPOSE
+//     * AUTOMATED METHOD
+//     */
+//    public void calculateSalary(){
+//
+//        List<Employee> employees=new ArrayList<>();
+//        try {
+//            employees=employeeRepository.findByActive(true);
+//        }
+//        catch (Exception ex){
+//            System.out.println(EMStatus.DB_ERROR);
+//        }
+//
+//        String month =LocalDate.now().getMonth().toString() + "-" + String.valueOf(LocalDate.now().getYear());
+//
+//        for (Employee employee:employees){
+//
+//            int fullDays = 0,halfDays=0;
+//            try {
+//                fullDays=attendanceRepository.countByEmployeeAndAttType(employee,AttendaceType.FL);
+//
+//                halfDays=attendanceRepository.countByEmployeeAndAttType(employee,AttendaceType.HF);
+//            }
+//            catch (Exception ex){
+//                System.out.println(EMStatus.DB_ERROR);
+//            }
+//
+//            double salary= Double.parseDouble(employee.getSalaryModel().getFullAmount()) * fullDays +
+//
+//                            Double.parseDouble(employee.getSalaryModel().getHalfAmount()) * halfDays;
+//
+//            Salry salry=new Salry(month,employee,String.valueOf(salary));
+//
+//            try {
+//                if(!salaryRepository.findByEmployeeAndMonth(employee,month).isEmpty())
+//                salaryRepository.save(salry);
+//            }catch (Exception ex){
+//                System.out.println(EMStatus.DB_ERROR);
+//            }
+//
+//        }
+//
+//    }
 }

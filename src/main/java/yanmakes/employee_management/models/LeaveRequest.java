@@ -2,7 +2,6 @@ package yanmakes.employee_management.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class LeaveRequest implements Serializable {
             joinColumns=@JoinColumn(name="request_id")
     )
     @Column(name = "dates")
-    private List<LocalDate> dates;
+    private List<String> dates;
 
     @Column(name = "reason")
     private String reason;
@@ -77,11 +76,11 @@ public class LeaveRequest implements Serializable {
         this.requestedDate = requestedDate;
     }
 
-    public List<LocalDate> getDates() {
+    public List<String> getDates() {
         return dates;
     }
 
-    public void setDates(List<LocalDate> dates) {
+    public void setDates(List<String> dates) {
         this.dates = dates;
     }
 
@@ -148,6 +147,6 @@ public class LeaveRequest implements Serializable {
     }
 
     public boolean isValid(){
-        return !this.requestedBy.equals("") && !this.dates.isEmpty() && !this.equals("") && this.checked == false;
+        return this.requestedBy!=null && !this.dates.isEmpty() && !this.reason.equals("") && this.checked == false;
     }
 }

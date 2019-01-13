@@ -33,8 +33,6 @@ public class TaskService {
         task.setActive(true);
         task.setCreatedDate(java.time.LocalDateTime.now());
 
-        System.out.println(java.time.LocalDateTime.now());
-
         System.out.println(task.toString());
         List<Employee> employees=new ArrayList<>();
 
@@ -44,9 +42,9 @@ public class TaskService {
                 employees.add(employeeRepository.getOne(e.geteId()));
             }
 
+            task.setCreatedBy(employeeRepository.getOne(task.getCreatedBy().geteId()));
+
 //            task.setCreatedBy(employeeRepository.getOne(task.getCreatedBy().geteId()));
-
-
         }catch (Exception ex){
             throw new EMException(EMStatus.DB_ERROR);
         }
@@ -68,4 +66,21 @@ public class TaskService {
         return task;
     }
 
+//    public List<Task> getTask(int id) throws EMException {
+//
+//        List<Task> task;
+//        try {
+//            List<Employee> employee=new ArrayList<>();
+//            employee.add(employeeRepository.getOne(id));
+//
+//            task=taskRepository.findByEmployees(employee);
+//        }catch (Exception ex){
+//            throw new EMException(EMStatus.DB_ERROR);
+//        }
+//
+//        if(task.isEmpty())
+//            throw new EMException(EMStatus.NO_ENTRY_FOUND);
+//
+//        return task;
+//    }
 }

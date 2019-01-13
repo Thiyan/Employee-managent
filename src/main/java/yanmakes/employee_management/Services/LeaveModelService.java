@@ -49,6 +49,12 @@ public class LeaveModelService {
         return leaveModels;
     }
 
+    /**
+     * THIS METHOD IS FOR DELETING A LEAVE MODEL BY ADMIN
+     * @param id
+     * @return
+     * @throws EMException
+     */
     public LeaveModel delete(String id) throws EMException {
 
         LeaveModel leaveModel;
@@ -74,6 +80,12 @@ public class LeaveModelService {
         return leaveModel;
     }
 
+    /**
+     * THIS METHOD IS FOR UPDATING NEW LEAVE MODEL BY ADMIN
+     * @param leaveModel
+     * @return
+     * @throws EMException
+     */
     public LeaveModel update(LeaveModel leaveModel) throws EMException {
 
         try {

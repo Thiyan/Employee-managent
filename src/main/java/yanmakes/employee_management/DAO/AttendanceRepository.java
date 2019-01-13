@@ -7,6 +7,7 @@ import yanmakes.employee_management.models.Attendance;
 import yanmakes.employee_management.models.Employee;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -17,4 +18,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance,Integer> 
     List<Attendance> findByEmployeeAndAttType(Employee employee, AttendaceType type);
 
     int countByEmployeeAndAttType(Employee employee, AttendaceType type);
+
+    List<Attendance> findByEmployee(Employee one);
 }
