@@ -69,16 +69,17 @@ public class LeaveRequestService {
             throw new EMException(EMStatus.DB_ERROR);
         }
 
-        if(leaveRequest.getRequestedDate()==one.getRequestedDate() && leaveRequest.getReason() == one.getReason()
-                &&leaveRequest.getRequestedBy()==one.getRequestedBy()
-                &&leaveRequest.getRequestId() ==one.getRequestId()){
+        System.out.println(leaveRequest.toString());
+        if(leaveRequest.getRequestId() ==one.getRequestId()){
 
             leaveRequest.setChecked(true);
         }
         else
             throw  new EMException(EMStatus.NO_REQUEST);
 
-        if (leaveRequest.getApprovedBy().equals("") || leaveRequest.isChecked()==false
+        leaveRequest.setApprovedBy(employeeRepository.getOne(leaveRequest.getApprovedBy().geteId()));
+
+        if (leaveRequest.getApprovedBy()==null || leaveRequest.isChecked()==false
                 || String.valueOf(leaveRequest.getDays()).equals(""))
             throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
 
