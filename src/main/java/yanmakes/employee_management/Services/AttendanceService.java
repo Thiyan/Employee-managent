@@ -12,6 +12,7 @@ import yanmakes.employee_management.Utils.AttendaceTimeType;
 import yanmakes.employee_management.Utils.AttendaceType;
 import yanmakes.employee_management.models.Attendance;
 import yanmakes.employee_management.models.Employee;
+import yanmakes.employee_management.models.LeaveRequest;
 import yanmakes.employee_management.models.Salry;
 
 import java.time.LocalDate;
@@ -156,6 +157,8 @@ public class AttendanceService {
 
         return attendances;
     }
+
+
 
 //    /**
 //     * THIS METHOD IS FOR DETERMINE WHETHER THE DAY IS HALF OR FULL FOR  EMPLOYEES ACCORDING

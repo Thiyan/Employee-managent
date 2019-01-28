@@ -106,6 +106,6 @@ public class Attendance implements Serializable {
     }
 
         public boolean isValid(){
-        return !this.employee.equals("");
+        return this.employee!=null;
     }
 }

@@ -70,13 +70,19 @@ public class API {
         return new EMResponse(attendanceService.getAttendance(id));
     }
 
+    @GetMapping("my-requests")
+    public EMResponse getRequests(@RequestParam("id") int id) throws EMException {
+
+        return new EMResponse(leaveRequestService.getRequests(id));
+    }
+
 
 //    @GetMapping("my-task")
 //    public EMResponse getTasks(@RequestParam("id") int id) throws EMException {
 //
 //        return new EMResponse(taskService.getTask(id));
 //    }
-    
+//
     @PostMapping("/add-request")
     public EMResponse addRequest(@RequestBody LeaveRequest request) throws EMException {
 

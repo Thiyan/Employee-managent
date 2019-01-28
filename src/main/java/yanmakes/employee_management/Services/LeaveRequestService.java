@@ -6,10 +6,12 @@ import yanmakes.employee_management.DAO.EmployeeRepository;
 import yanmakes.employee_management.DAO.LeaveRequestRepository;
 import yanmakes.employee_management.Exceptions.EMException;
 import yanmakes.employee_management.Exceptions.EMStatus;
+import yanmakes.employee_management.models.Employee;
 import yanmakes.employee_management.models.LeaveRequest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -90,5 +92,15 @@ public class LeaveRequestService {
         }
 
         return leaveRequest;
+    }
+
+    public List<LeaveRequest> getRequests(int id) {
+
+
+        List()
+        try{
+            Employee employee=employeeRepository.getOne(id);
+            leaveRequestRepository.findByRequestedBy(employee);
+        }
     }
 }

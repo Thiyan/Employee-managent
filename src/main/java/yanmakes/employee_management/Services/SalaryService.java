@@ -74,7 +74,7 @@ public class SalaryService {
         List<Salry> salries;
         try {
             Employee employee=employeeRepository.getOne(id);
-            salries=salaryRepository.findByEmployee(employee);
+            salries=salaryRepository.findByEmployeeOrderBySalaryIdDesc(employee);
         }
         catch (Exception ex){
             throw new EMException(EMStatus.DB_ERROR);
