@@ -59,7 +59,7 @@ public class API {
 
 
     @GetMapping("my-salary")
-    public EMResponse getSalary(@RequestParam("id") int id) throws EMException {
+    public EMResponse getSalary(@RequestParam("id") String id) throws EMException {
 
         return new EMResponse(salaryService.getSalary(id));
     }
@@ -71,27 +71,31 @@ public class API {
     }
 
     @GetMapping("my-requests")
-    public EMResponse getRequests(@RequestParam("id") int id) throws EMException {
+    public EMResponse getRequests(@RequestParam("id") String id) throws EMException {
 
         return new EMResponse(leaveRequestService.getRequests(id));
     }
 
 
-//    @GetMapping("my-task")
-//    public EMResponse getTasks(@RequestParam("id") int id) throws EMException {
-//
-//        return new EMResponse(taskService.getTask(id));
-//    }
-//
+    @GetMapping("my-task")
+    public EMResponse getTasks(@RequestParam("id") String id) throws EMException {
+
+        return new EMResponse(taskService.getTask(id));
+    }
+
     @PostMapping("/add-request")
     public EMResponse addRequest(@RequestBody LeaveRequest request) throws EMException {
-
-//        System.out.println("sjkdjks");
 
         if (!request.isValid())
             throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
 
         return new EMResponse(leaveRequestService.addLeaveRequest(request));
+    }
+
+    @PostMapping("/change-password")
+    public EMResponse ChangePassword(@RequestParam("user") String userId,@RequestParam("cur") String cur, @RequestParam("password") String password) throws EMException {
+
+        return new EMResponse(employeeService.changePassword(userId,cur,password));
     }
 
 }

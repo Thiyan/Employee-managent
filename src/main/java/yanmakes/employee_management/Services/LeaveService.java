@@ -78,14 +78,8 @@ public class LeaveService {
 
         try {
             taken=leavesRepository.findByEmployeeAndMonth(employee,month).getTaken();
-
-            System.out.println(taken);
-            System.out.println(employee.toString());
-
-
             allowed=leaveModelRepository.getOne(employee.getLeaveModel().getlId()).getDaysPerMonth();
 
-            System.out.println(allowed);
         }catch (Exception e){
             System.out.println(EMStatus.DB_ERROR);
         }

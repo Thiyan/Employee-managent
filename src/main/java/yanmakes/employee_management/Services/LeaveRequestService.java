@@ -4,13 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yanmakes.employee_management.DAO.EmployeeRepository;
 import yanmakes.employee_management.DAO.LeaveRequestRepository;
+import yanmakes.employee_management.DAO.LeavesRepository;
 import yanmakes.employee_management.Exceptions.EMException;
 import yanmakes.employee_management.Exceptions.EMStatus;
+import yanmakes.employee_management.Utils.EMDate;
 import yanmakes.employee_management.models.Employee;
 import yanmakes.employee_management.models.LeaveRequest;
+import yanmakes.employee_management.models.Leaves;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,6 +29,12 @@ public class LeaveRequestService {
     @Autowired
     private LeaveService leaveService;
 
+    @Autowired
+    private LeavesRepository leavesRepository;
+
+    @Autowired
+    private EMDate emDate;
+
     /**
      * THIS METHOD IS FOR ADDING A NEW LEAVE REQUEST BY EMPLOYEE
      * @param leaveRequest
@@ -34,14 +43,15 @@ public class LeaveRequestService {
      */
     public LeaveRequest addLeaveRequest(LeaveRequest leaveRequest) throws EMException {
 
-        String month=LocalDate.parse(leaveRequest.getDates().get(0)).getMonth().toString() +"-"+ String.valueOf(LocalDate.parse(leaveRequest.getDates().get(0)).getYear());
+        String month=LocalDate.parse(leaveRequest.getDate()).getMonth().toString() +"-"+ String.valueOf(LocalDate.parse(leaveRequest.getDate()).getYear());
 
         leaveRequest.setRequestedBy(employeeRepository.getOne(leaveRequest.getRequestedBy().geteId()));
-        leaveRequest.setRequestedDate(LocalDateTime.now());
+        leaveRequest.setRequestedDate(emDate.currentTimestamp());
 
         int a=leaveService.canMakeLeave(leaveRequest.getRequestedBy(),month);
+        System.out.println(a);
 
-        if(a>=leaveRequest.getDates().size()){
+        if(a>0){
             leaveRequest.setChecked(false);
 
             try {
@@ -68,25 +78,27 @@ public class LeaveRequestService {
         try {
             one = leaveRequestRepository.getOne(leaveRequest.getRequestId());
         }catch (Exception ex){
-            throw new EMException(EMStatus.DB_ERROR);
-        }
-
-        System.out.println(leaveRequest.toString());
-        if(leaveRequest.getRequestId() ==one.getRequestId()){
-
-            leaveRequest.setChecked(true);
-        }
-        else
             throw  new EMException(EMStatus.NO_REQUEST);
+        }
+
+        System.out.println(one.toString());
+        leaveRequest.setChecked(true);
 
         leaveRequest.setApprovedBy(employeeRepository.getOne(leaveRequest.getApprovedBy().geteId()));
 
-        if (leaveRequest.getApprovedBy()==null || leaveRequest.isChecked()==false
-                || String.valueOf(leaveRequest.getDays()).equals(""))
+        if (leaveRequest.getApprovedBy()==null || leaveRequest.isChecked()==false)
             throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
 
+        String month=LocalDate.parse(leaveRequest.getDate()).getMonth().toString() +"-"+
+                String.valueOf(LocalDate.parse(leaveRequest.getDate()).getYear());
         try {
             leaveRequest=leaveRequestRepository.save(leaveRequest);
+            Leaves leave=leavesRepository.findByEmployeeAndMonth(leaveRequest.getRequestedBy(),month);
+
+            leave.setTaken(leave.getTaken()+1);
+
+            leavesRepository.save(leave);
+
         }catch (Exception ex){
             throw new EMException(EMStatus.DB_ERROR);
         }
@@ -94,13 +106,39 @@ public class LeaveRequestService {
         return leaveRequest;
     }
 
-    public List<LeaveRequest> getRequests(int id) {
+
+    public List<LeaveRequest> getRequests(String id) throws EMException {
 
 
-        List()
+        List<LeaveRequest> leaveRequests=new ArrayList<>();
         try{
-            Employee employee=employeeRepository.getOne(id);
-            leaveRequestRepository.findByRequestedBy(employee);
+            Employee employee=employeeRepository.findByUserId(id);
+            System.out.println(employee.toString());
+            leaveRequests=leaveRequestRepository.findAllByRequestedByOrderByRequestIdDesc(employee);
+        }catch(Exception ex){
+//            throw new EMException(EMStatus.DB_ERROR);
+            ex.printStackTrace();
+        }
+
+        return leaveRequests;
+    }
+
+    public List<LeaveRequest> getRequestsByChecked() throws EMException {
+
+        try {
+            return leaveRequestRepository.findByChecked(false);
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+    }
+
+    public List<LeaveRequest> getReply(String id) throws EMException {
+
+        try {
+            Employee employee=employeeRepository.findByUserId(id);
+            return leaveRequestRepository.findAllByApprovedByOrderByRequestIdDesc(employee);
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
         }
     }
 }

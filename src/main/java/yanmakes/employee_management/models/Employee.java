@@ -79,6 +79,31 @@ public class Employee implements Serializable {
 
     public Employee(){}
 
+    public Employee(Employee employee) {
+
+        this.eId=employee.geteId();
+        this.fName=employee.getfName();
+        this.lName=employee.getlName();
+        this.dob=employee.getDob();
+        this.gender=employee.getGender();
+        this.doe=employee.getDoe();
+        this.email=employee.getEmail();
+        this.mobile=employee.getMobile();
+        this.phone=employee.getPhone();
+        this.curAddress=employee.getCurAddress();
+        this.perAddress=employee.getPerAddress();
+        this.blood=employee.getBlood();
+        this.position=employee.getPosition();
+        this.password=employee.getPassword();
+        this.userId=employee.getUserId();
+        this.image=employee.getImage();
+        this.roles=employee.getRoles();
+        this.salaryModel=employee.getSalaryModel();
+        this.leaveModel=employee.getLeaveModel();
+        this.active=employee.isActive();
+
+    }
+
     public int geteId() {
         return eId;
     }

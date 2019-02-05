@@ -74,6 +74,16 @@ public class ManagerAPI {
 //        return new EMResponse(salaryService.createSalary());
 //    }
 
+    @GetMapping("/requests")
+    public EMResponse getRequests() throws EMException {
+        return new EMResponse(leaveRequestService.getRequestsByChecked());
+    }
+
+    @GetMapping("/my-reply")
+    public EMResponse getReply(@RequestParam("id") String id) throws EMException {
+
+        return new EMResponse(leaveRequestService.getReply(id));
+    }
 
 
 }

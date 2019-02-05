@@ -2,8 +2,6 @@ package yanmakes.employee_management.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "leave_request")
@@ -19,15 +17,15 @@ public class LeaveRequest implements Serializable {
     private Employee requestedBy;
 
     @Column(name = "requested_date")
-    private LocalDateTime requestedDate;
+    private String requestedDate;
 
-    @ElementCollection
-    @CollectionTable(
-            name="leave_dates",
-            joinColumns=@JoinColumn(name="request_id")
-    )
-    @Column(name = "dates")
-    private List<String> dates;
+//    @ElementCollection
+//    @CollectionTable(
+//            name="leave_dates",
+//            joinColumns=@JoinColumn(name="request_id")
+//    )
+    @Column(name = "date")
+    private String date;
 
     @Column(name = "reason")
     private String reason;
@@ -68,20 +66,20 @@ public class LeaveRequest implements Serializable {
         this.requestedBy = requestedBy;
     }
 
-    public LocalDateTime getRequestedDate() {
+    public String getRequestedDate() {
         return requestedDate;
     }
 
-    public void setRequestedDate(LocalDateTime requestedDate) {
+    public void setRequestedDate(String requestedDate) {
         this.requestedDate = requestedDate;
     }
 
-    public List<String> getDates() {
-        return dates;
+    public String getDate() {
+        return date;
     }
 
-    public void setDates(List<String> dates) {
-        this.dates = dates;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getReason() {
@@ -138,7 +136,7 @@ public class LeaveRequest implements Serializable {
                 "requestId=" + requestId +
                 ", requestedBy=" + requestedBy +
                 ", requestedDate=" + requestedDate +
-                ", dates=" + dates +
+                ", dates=" + date +
                 ", reason='" + reason + '\'' +
                 ", approved=" + approved +
                 ", days=" + days +
@@ -147,6 +145,6 @@ public class LeaveRequest implements Serializable {
     }
 
     public boolean isValid(){
-        return this.requestedBy!=null && !this.dates.isEmpty() && !this.reason.equals("") && this.checked == false;
+        return this.requestedBy!=null && !this.date.isEmpty() && !this.reason.equals("") && this.checked == false;
     }
 }

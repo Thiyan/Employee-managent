@@ -10,5 +10,7 @@ import java.util.List;
 public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
     List<Employee> findByActive(boolean b);
 
-    boolean findByUserId(String userId);
+//    boolean findByUserId(String userId);
+
+    Employee findByUserId(String userId);
 }

@@ -69,11 +69,11 @@ public class SalaryService {
 
 
 
-    public List<Salry> getSalary(int id) throws EMException {
+    public List<Salry> getSalary(String id) throws EMException {
 
         List<Salry> salries;
         try {
-            Employee employee=employeeRepository.getOne(id);
+            Employee employee=employeeRepository.findByUserId(id);
             salries=salaryRepository.findByEmployeeOrderBySalaryIdDesc(employee);
         }
         catch (Exception ex){

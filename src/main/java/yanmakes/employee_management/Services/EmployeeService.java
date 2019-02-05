@@ -108,7 +108,7 @@ public class EmployeeService {
      */
     public Employee updateEmployee(Employee employee) throws EMException {
 
-        if(String.valueOf(employee.geteId()).equals("") || !employeeRepository.findByUserId(employee.getUserId()))
+        if(String.valueOf(employee.geteId()).equals("") || employeeRepository.findByUserId(employee.getUserId())==null)
             throw new EMException(EMStatus.ID_IS_REQUIRED);
 
         try {
@@ -145,6 +145,36 @@ public class EmployeeService {
         }
 
         System.out.println(employee.toString());
+        return employee;
+
+    }
+
+    public Employee changePassword(String userId, String cur, String password) throws EMException {
+
+        Employee employee;
+        try {
+            employee=employeeRepository.findByUserId(userId);
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+        if (employee!=null){
+
+            if(passwordEncoder.matches(cur,employee.getPassword())){
+                employee.setPassword(passwordEncoder.encode(password));
+                try {
+                    employeeRepository.save(employee);
+                }catch (Exception ex){
+                    throw new EMException(EMStatus.DB_ERROR);
+                }
+            }
+
+            else
+                throw new EMException(EMStatus.WRONG_PASSWORD);
+
+        }else
+            throw new EMException(EMStatus.NO_ENTRY_FOUND);
+
         return employee;
 
     }

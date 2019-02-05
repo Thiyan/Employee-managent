@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task,Integer> {
+    List<Task> findByEmployee(List<Employee> employee);
 
 //    List<Task> findByEmployees(List<Employee> employee);
 }

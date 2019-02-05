@@ -34,22 +34,16 @@ public class TaskService {
         task.setCreatedDate(java.time.LocalDateTime.now());
 
         System.out.println(task.toString());
-        List<Employee> employees=new ArrayList<>();
+//        List<Employee> employees=new ArrayList<>();
 
         try {
 
-            for (Employee e:task.getEmployess()){
-                employees.add(employeeRepository.getOne(e.geteId()));
-            }
+            task.setEmployee(employeeRepository.getOne(task.getEmployee().geteId()));
 
             task.setCreatedBy(employeeRepository.getOne(task.getCreatedBy().geteId()));
-
-//            task.setCreatedBy(employeeRepository.getOne(task.getCreatedBy().geteId()));
         }catch (Exception ex){
             throw new EMException(EMStatus.DB_ERROR);
         }
-
-        task.setEmployess(employees);
 
         System.out.println(task.toString());
 
@@ -60,27 +54,28 @@ public class TaskService {
            task = taskRepository.save(task);
         }
         catch (Exception ex){
+            ex.printStackTrace();
             throw new EMException(EMStatus.DB_ERROR);
         }
 
         return task;
     }
 
-//    public List<Task> getTask(int id) throws EMException {
-//
-//        List<Task> task;
-//        try {
-//            List<Employee> employee=new ArrayList<>();
-//            employee.add(employeeRepository.getOne(id));
-//
-//            task=taskRepository.findByEmployees(employee);
-//        }catch (Exception ex){
-//            throw new EMException(EMStatus.DB_ERROR);
-//        }
-//
-//        if(task.isEmpty())
-//            throw new EMException(EMStatus.NO_ENTRY_FOUND);
-//
-//        return task;
-//    }
+    public List<Task> getTask(String id) throws EMException {
+
+        List<Task> task;
+        try {
+            List<Employee> employee=new ArrayList<>();
+            employee.add(employeeRepository.findByUserId(id));
+
+            task=taskRepository.findByEmployee(employee);
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+        if(task.isEmpty())
+            throw new EMException(EMStatus.NO_ENTRY_FOUND);
+
+        return task;
+    }
 }

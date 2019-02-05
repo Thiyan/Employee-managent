@@ -3,21 +3,19 @@ package yanmakes.employee_management.models;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "task")
 public class Task implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "tid")
     private int tId;
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinTable(name = "emp_task", joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "emp_id"))
-    private List<Employee> employess;
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "employee")
+    private Employee employee;
 
     @Column(name = "description",length = 3000)
     private String description;
@@ -46,12 +44,12 @@ public class Task implements Serializable {
         this.tId = tId;
     }
 
-    public List<Employee> getEmployess() {
-        return employess;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public void setEmployess(List<Employee> employess) {
-        this.employess = employess;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public String getDescription() {
@@ -98,9 +96,9 @@ public class Task implements Serializable {
     public String toString() {
         return "Task{" +
                 "tId=" + tId +
-                ", employess=" + employess +
+                ", employees=" + employee +
                 ", description='" + description + '\'' +
-                ", deadLine=" + deadLine +
+                ", deadLine='" + deadLine + '\'' +
                 ", createdDate=" + createdDate +
                 ", createdBy=" + createdBy +
                 ", active=" + active +
@@ -108,6 +106,6 @@ public class Task implements Serializable {
     }
 
     public boolean isValid(){
-        return !this.employess.isEmpty() && !this.description.equals("") && !this.deadLine.equals("") /*&& !this.createdBy.equals("")*/;
+        return this.employee!=null && !this.description.equals("") && !this.deadLine.equals("") /*&& !this.createdBy.equals("")*/;
     }
 }
