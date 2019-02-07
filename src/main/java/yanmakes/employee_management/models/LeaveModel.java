@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class LeaveModel implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lm_id")
     private int lId;
 

@@ -58,7 +58,7 @@ public class ManagerAPI {
 
     @PutMapping("/add-reply")
     public EMResponse addReply(@RequestBody LeaveRequest leaveRequest) throws EMException {
-//        System.out.println(program.toString());
+//        System.out.println(leaveRequest.toString());
         return new EMResponse(leaveRequestService.addLeaveReply(leaveRequest));
     }
 

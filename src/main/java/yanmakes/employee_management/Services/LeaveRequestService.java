@@ -43,12 +43,16 @@ public class LeaveRequestService {
      */
     public LeaveRequest addLeaveRequest(LeaveRequest leaveRequest) throws EMException {
 
+        System.out.println(leaveRequest.toString());
         String month=LocalDate.parse(leaveRequest.getDate()).getMonth().toString() +"-"+ String.valueOf(LocalDate.parse(leaveRequest.getDate()).getYear());
 
+        System.out.println(month);
         leaveRequest.setRequestedBy(employeeRepository.getOne(leaveRequest.getRequestedBy().geteId()));
         leaveRequest.setRequestedDate(emDate.currentTimestamp());
 
+        System.out.println(leaveRequest.toString());
         int a=leaveService.canMakeLeave(leaveRequest.getRequestedBy(),month);
+        System.out.println(a);
         System.out.println(a);
 
         if(a>0){
@@ -74,25 +78,26 @@ public class LeaveRequestService {
      */
     public LeaveRequest addLeaveReply(LeaveRequest leaveRequest) throws EMException {
 
-        LeaveRequest one;
-        try {
-            one = leaveRequestRepository.getOne(leaveRequest.getRequestId());
-        }catch (Exception ex){
-            throw  new EMException(EMStatus.NO_REQUEST);
-        }
-
-        System.out.println(one.toString());
+//        System.out.println(leaveRequest.toString());
         leaveRequest.setChecked(true);
+        leaveRequest.setDate(leaveRequest.getDate());
 
         leaveRequest.setApprovedBy(employeeRepository.getOne(leaveRequest.getApprovedBy().geteId()));
+
+        System.out.println(leaveRequest.toString());
 
         if (leaveRequest.getApprovedBy()==null || leaveRequest.isChecked()==false)
             throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
 
         String month=LocalDate.parse(leaveRequest.getDate()).getMonth().toString() +"-"+
                 String.valueOf(LocalDate.parse(leaveRequest.getDate()).getYear());
+
+        System.out.println(month);
         try {
             leaveRequest=leaveRequestRepository.save(leaveRequest);
+
+            System.out.println(leaveRequest);
+            System.out.println("ghfd");
             Leaves leave=leavesRepository.findByEmployeeAndMonth(leaveRequest.getRequestedBy(),month);
 
             leave.setTaken(leave.getTaken()+1);
@@ -100,7 +105,8 @@ public class LeaveRequestService {
             leavesRepository.save(leave);
 
         }catch (Exception ex){
-            throw new EMException(EMStatus.DB_ERROR);
+//            throw new EMException(EMStatus.DB_ERROR);
+            ex.printStackTrace();
         }
 
         return leaveRequest;
@@ -116,8 +122,8 @@ public class LeaveRequestService {
             System.out.println(employee.toString());
             leaveRequests=leaveRequestRepository.findAllByRequestedByOrderByRequestIdDesc(employee);
         }catch(Exception ex){
-//            throw new EMException(EMStatus.DB_ERROR);
-            ex.printStackTrace();
+            throw new EMException(EMStatus.DB_ERROR);
+//            ex.printStackTrace();
         }
 
         return leaveRequests;

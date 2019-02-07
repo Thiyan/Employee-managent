@@ -45,5 +45,10 @@ public class EMDate {
         return localDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm").withZone(DateTimeZone.forID("Asia/Colombo")));
     }
 
+    public String currentTime(){
+        DateTime localDate = DateTime.now();
+        return localDate.toString(DateTimeFormat.forPattern("hh:mm").withZone(DateTimeZone.forID("Asia/Colombo")));
+    }
+
 }
 

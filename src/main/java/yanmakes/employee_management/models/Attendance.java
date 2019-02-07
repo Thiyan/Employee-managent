@@ -13,7 +13,7 @@ public class Attendance implements Serializable {
 
     @Id
     @Column(name = "aid")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int aId;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
@@ -21,13 +21,13 @@ public class Attendance implements Serializable {
     private Employee employee;
 
     @Column(name = "date")
-    private LocalDate date;
+    private String date;
 
     @Column(name = "arrival")
-    private LocalTime arrival;
+    private String arrival;
 
     @Column(name = "departure")
-    private LocalTime departure;
+    private String departure;
 
     @Column(name = "attendance")
     private boolean attendance;
@@ -53,27 +53,27 @@ public class Attendance implements Serializable {
         this.employee = employee;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public LocalTime getArrival() {
+    public String getArrival() {
         return arrival;
     }
 
-    public void setArrival(LocalTime arrival) {
+    public void setArrival(String arrival) {
         this.arrival = arrival;
     }
 
-    public LocalTime getDeparture() {
+    public String getDeparture() {
         return departure;
     }
 
-    public void setDeparture(LocalTime departure) {
+    public void setDeparture(String departure) {
         this.departure = departure;
     }
 

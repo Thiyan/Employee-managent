@@ -1,5 +1,8 @@
 package yanmakes.employee_management.Services;
 
+import org.joda.time.Duration;
+import org.joda.time.Minutes;
+import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static java.time.temporal.ChronoUnit.*;
@@ -10,12 +13,13 @@ import yanmakes.employee_management.Exceptions.EMException;
 import yanmakes.employee_management.Exceptions.EMStatus;
 import yanmakes.employee_management.Utils.AttendaceTimeType;
 import yanmakes.employee_management.Utils.AttendaceType;
+import yanmakes.employee_management.Utils.EMDate;
 import yanmakes.employee_management.models.Attendance;
 import yanmakes.employee_management.models.Employee;
-import yanmakes.employee_management.models.LeaveRequest;
 import yanmakes.employee_management.models.Salry;
 
-import java.time.LocalDate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +38,9 @@ public class AttendanceService {
     @Autowired
     private SalaryService salaryService;
 
+    @Autowired
+    private EMDate emDate;
+
     /**
      * THIS METHOD IS FOR ADDING A DAILY ATTENDANCE
      * @param attendance
@@ -47,37 +54,32 @@ public class AttendanceService {
 
             if(type== AttendaceTimeType.AR){
                 System.out.println("Hi222");
-                attendance.setDate(java.time.LocalDate.now());
-                attendance.setArrival(java.time.LocalTime.now());
+                attendance.setDate(emDate.currentDate());
+                attendance.setArrival(emDate.currentTime());
+
             }
             else if (type== AttendaceTimeType.DP){
+
+
                 if(!String.valueOf(attendance.getaId()).equals("") && !attendance.getDate().equals("")
                     && !attendance.getArrival().equals(""))
-                        attendance.setDeparture(java.time.LocalTime.now());
-
+                        attendance.setDeparture(emDate.currentTime());
                 else
                     throw new EMException(EMStatus.NO_ARRIVAL);
             }
-
         }
         else {
-            if(String.valueOf(attendance.getaId()).equals("") && attendance.getDate().equals(""))
-                attendance.setDate(java.time.LocalDate.now());
-
-            else
-                throw new EMException(EMStatus.NO_ARRIVAL);
+                attendance.setDate(emDate.currentTime());
+                attendance.setAttType(AttendaceType.AB);
         }
 
         System.out.println(attendance.toString());
-
 
         try {
             attendance.setEmployee(employeeRepository.getOne(attendance.getEmployee().geteId()));
 
             System.out.println(attendance.toString());
             attendance = attendanceRepository.save(attendance);
-
-
         }
         catch (Exception ex){
             throw new EMException(EMStatus.DB_ERROR);
@@ -95,8 +97,20 @@ public class AttendanceService {
     }
 
     public Attendance calculateAttendance(Attendance attendance){
-        System.out.println("sahdgd");
-        if( HOURS.between(attendance.getArrival(),attendance.getDeparture()) >=5)
+        System.out.println(attendance.getDeparture());
+        System.out.println(attendance.getArrival());
+
+        SimpleDateFormat f=new SimpleDateFormat("HH:mm");
+        long a=0;
+        try {
+
+            a=(f.parse(attendance.getDeparture()).getTime()-f.parse(attendance.getArrival()).getTime())/(1000*60*60);
+            System.out.println(a);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if( a >=5)
             attendance.setAttType(AttendaceType.FL);
 
         else
@@ -110,7 +124,7 @@ public class AttendanceService {
 
     public Attendance calculateSalary(Attendance attendance){
 
-        String month =attendance.getDate().getMonth().toString() + "-" + String.valueOf(attendance.getDate().getYear());
+        String month =emDate.parse(attendance.getDate()).getMonthOfYear() + "-" + emDate.parse(attendance.getDate()).getYear();
 
         Salry salary=new Salry();
 
@@ -148,6 +162,22 @@ public class AttendanceService {
             Employee employee=employeeRepository.getOne(id);
             System.out.println(employee.toString());
             attendances=attendanceRepository.findByEmployee(employee);
+        }catch (Exception ex){
+            throw new EMException(EMStatus.DB_ERROR);
+        }
+
+        if(attendances.isEmpty())
+            throw new EMException(EMStatus.NO_ENTRY_FOUND);
+
+        return attendances;
+    }
+
+    public List<Attendance> getAttendances() throws EMException {
+
+        List<Attendance> attendances=new ArrayList<>();
+
+        try {
+            attendances=attendanceRepository.findAll();
         }catch (Exception ex){
             throw new EMException(EMStatus.DB_ERROR);
         }

@@ -40,9 +40,6 @@ public class LeaveRequest implements Serializable {
     @Column(name = "is_approved")
     private boolean approved;
 
-    @Column(name = "days")
-    private int days;
-
     @Column(name = "reply")
     private String reply;
 
@@ -114,14 +111,6 @@ public class LeaveRequest implements Serializable {
         this.approved = approved;
     }
 
-    public int getDays() {
-        return days;
-    }
-
-    public void setDays(int days) {
-        this.days = days;
-    }
-
     public String getReply() {
         return reply;
     }
@@ -139,7 +128,6 @@ public class LeaveRequest implements Serializable {
                 ", dates=" + date +
                 ", reason='" + reason + '\'' +
                 ", approved=" + approved +
-                ", days=" + days +
                 ", reply='" + reply + '\'' +
                 '}';
     }

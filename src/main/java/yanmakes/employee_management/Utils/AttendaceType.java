@@ -4,7 +4,7 @@ public enum AttendaceType {
 
     HF("Half_day"),
     FL("Full_day"),
-    AB("Abseunt");
+    AB("Absent");
 
     private String value;
 

@@ -1,6 +1,5 @@
 package yanmakes.employee_management.Services;
 
-import org.hibernate.dialect.SybaseAnywhereDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -144,6 +143,37 @@ public class EmployeeService {
             throw new EMException(EMStatus.DB_ERROR);
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         System.out.println(employee.toString());
         return employee;
 
@@ -176,6 +206,32 @@ public class EmployeeService {
             throw new EMException(EMStatus.NO_ENTRY_FOUND);
 
         return employee;
+
+    }
+
+    public Employee login(String userId, String password) throws EMException {
+
+        Employee employee;
+        boolean status=false;
+
+        try {
+            employee=employeeRepository.findByUserId(userId);
+        }catch (Exception ex){
+            throw new EMException(EMStatus.WRONG_USER);
+        }
+
+        if (employee!=null){
+            if(passwordEncoder.matches(password,employee.getPassword()))
+                status =true;
+            else
+                throw new EMException(EMStatus.WRONG_PASSWORD);
+        }
+
+        if(status==true)
+            return employee;
+
+        else
+            throw new EMException(EMStatus.WRONG_PASSWORD);
 
     }
 }

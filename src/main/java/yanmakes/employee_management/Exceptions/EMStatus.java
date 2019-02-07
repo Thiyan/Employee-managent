@@ -15,7 +15,8 @@ public enum EMStatus {
     EXCEEDED_REQUESTE("E1009","Request days are greater than remaining leave days" ),
     ID_IS_REQUIRED("E1010","New objects cannot be allowed for PUT method" ),
     NO_REQUEST("E1011","Reply can't create without request" ),
-    WRONG_PASSWORD("E1012","Current password is incorrect" );
+    WRONG_PASSWORD("E1012","Current password is incorrect" ),
+    WRONG_USER("E1013","Incorrect user id" );
 
     private final String statusCode;
     private final String statusDescription;

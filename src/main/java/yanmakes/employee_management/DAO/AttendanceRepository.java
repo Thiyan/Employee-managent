@@ -20,4 +20,5 @@ public interface AttendanceRepository extends JpaRepository<Attendance,Integer> 
     int countByEmployeeAndAttType(Employee employee, AttendaceType type);
 
     List<Attendance> findByEmployee(Employee one);
+
 }

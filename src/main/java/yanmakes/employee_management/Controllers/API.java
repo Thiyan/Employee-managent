@@ -46,15 +46,26 @@ public class API {
     }
 
 
-    @PostMapping("/attendance")
-    public EMResponse addAttendance(@RequestBody Attendance attendance,@RequestParam("time") AttendaceTimeType time) throws EMException {
+    @PostMapping("/arrival")
+    public EMResponse arrival(@RequestBody Attendance attendance) throws EMException {
 
         System.out.println("In api");
 
         if (!attendance.isValid())
             throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
 
-        return new EMResponse(attendanceService.addAttendance(attendance,time));
+        return new EMResponse(attendanceService.addAttendance(attendance,AttendaceTimeType.AR));
+    }
+
+    @PostMapping("/departure")
+    public EMResponse departure(@RequestBody Attendance attendance) throws EMException {
+
+        System.out.println("In api");
+
+        if (!attendance.isValid())
+            throw new EMException(EMStatus.MISSING_REQUIRED_PARAMS);
+
+        return new EMResponse(attendanceService.addAttendance(attendance,AttendaceTimeType.DP));
     }
 
 
@@ -68,6 +79,12 @@ public class API {
     public EMResponse getAttendance(@RequestParam("id") int id) throws EMException {
 
         return new EMResponse(attendanceService.getAttendance(id));
+    }
+
+    @GetMapping("attendances")
+    public EMResponse getAttendances() throws EMException {
+
+        return new EMResponse(attendanceService.getAttendances());
     }
 
     @GetMapping("my-requests")
@@ -97,5 +114,14 @@ public class API {
 
         return new EMResponse(employeeService.changePassword(userId,cur,password));
     }
+
+
+    @PostMapping("/login")
+    public EMResponse login(@RequestParam("user") String userId, @RequestParam("password") String password) throws EMException {
+
+        return new EMResponse(employeeService.login(userId,password));
+    }
+
+
 
 }
