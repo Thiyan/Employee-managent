@@ -9,7 +9,7 @@ public class Position implements Serializable {
 
     @Id
     @Column(name = "pid")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int pId;
 
     @Column(name = "position")

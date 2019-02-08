@@ -111,7 +111,6 @@ public class API {
 
     @PostMapping("/change-password")
     public EMResponse ChangePassword(@RequestParam("user") String userId,@RequestParam("cur") String cur, @RequestParam("password") String password) throws EMException {
-
         return new EMResponse(employeeService.changePassword(userId,cur,password));
     }
 
